@@ -58,6 +58,11 @@ fn get_cipher_suites(config: &AppConfig) -> Vec<CipherSuiteConfig> {
             kdf: "HKDF_SHA256".to_string(),
             aead: "CHACHA20_POLY1305".to_string(),
         },
+        CipherSuiteConfig {
+            kem: "SECP256K1_SHA256".to_string(),
+            kdf: "HKDF_SHA256".to_string(),
+            aead: "CHACHA20_POLY1305".to_string(),
+        },
     ];
 
     // Add high-security suite if in production mode

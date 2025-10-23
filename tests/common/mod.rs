@@ -2,7 +2,7 @@
 #![cfg(test)]
 #![allow(dead_code)]
 
-use ohttp::{
+use bitcoin_ohttp::{
     KeyConfig, Server as OhttpServer, SymmetricSuite,
     hpke::{Aead, Kdf, Kem},
 };
@@ -85,14 +85,14 @@ pub fn create_test_key_configs() -> Result<(KeyConfig, KeyConfig), Box<dyn std::
     // Legacy configuration (X25519 only)
     let legacy_config = KeyConfig::new(
         LEGACY_KEY_ID,
-        Kem::X25519Sha256,
+        Kem::K256Sha256,
         vec![SymmetricSuite::new(Kdf::HkdfSha256, Aead::Aes128Gcm)],
     )?;
 
     // Current configuration (for testing - in real implementation would be post-quantum)
     let current_config = KeyConfig::new(
         CURRENT_KEY_ID,
-        Kem::X25519Sha256, // ohttp crate limitation - would be KEM_X25519_KYBER768_DRAFT00
+        Kem::K256Sha256, // ohttp crate limitation - would be KEM_X25519_KYBER768_DRAFT00
         vec![SymmetricSuite::new(Kdf::HkdfSha256, Aead::Aes128Gcm)],
     )?;
 

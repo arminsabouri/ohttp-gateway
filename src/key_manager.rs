@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use ohttp::{
+use bitcoin_ohttp::{
     KeyConfig, Server as OhttpServer, SymmetricSuite,
     hpke::{Aead, Kdf, Kem},
 };
@@ -54,6 +54,11 @@ impl Default for KeyManagerConfig {
                 },
                 CipherSuiteConfig {
                     kem: "X25519_SHA256".to_string(),
+                    kdf: "HKDF_SHA256".to_string(),
+                    aead: "CHACHA20_POLY1305".to_string(),
+                },
+                CipherSuiteConfig {
+                    kem: "SECP256K1_SHA256".to_string(),
                     kdf: "HKDF_SHA256".to_string(),
                     aead: "CHACHA20_POLY1305".to_string(),
                 },
@@ -165,7 +170,7 @@ impl KeyManager {
         }
 
         // Determine KEM based on config - only X25519 is supported by ohttp crate
-        let kem = Kem::X25519Sha256;
+        let kem = Kem::K256Sha256;
 
         // Generate key config
         let key_config = if let Some(seed) = &self.seed {
