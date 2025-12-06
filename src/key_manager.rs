@@ -47,16 +47,16 @@ impl Default for KeyManagerConfig {
             key_retention_period: Duration::from_secs(7 * 24 * 60 * 60), // 7 days
             auto_rotation_enabled: true,
             cipher_suites: vec![
-                CipherSuiteConfig {
-                    kem: "X25519_SHA256".to_string(),
-                    kdf: "HKDF_SHA256".to_string(),
-                    aead: "AES_128_GCM".to_string(),
-                },
-                CipherSuiteConfig {
-                    kem: "X25519_SHA256".to_string(),
-                    kdf: "HKDF_SHA256".to_string(),
-                    aead: "CHACHA20_POLY1305".to_string(),
-                },
+                // CipherSuiteConfig {
+                //     kem: "X25519_SHA256".to_string(),
+                //     kdf: "HKDF_SHA256".to_string(),
+                //     aead: "AES_128_GCM".to_string(),
+                // },
+                // CipherSuiteConfig {
+                //     kem: "X25519_SHA256".to_string(),
+                //     kdf: "HKDF_SHA256".to_string(),
+                //     aead: "CHACHA20_POLY1305".to_string(),
+                // },
                 CipherSuiteConfig {
                     kem: "SECP256K1_SHA256".to_string(),
                     kdf: "HKDF_SHA256".to_string(),
@@ -146,30 +146,32 @@ impl KeyManager {
 
         // Parse cipher suites from config
         let mut symmetric_suites = Vec::new();
-        for suite in &self.config.cipher_suites {
-            let kdf = match suite.kdf.as_str() {
-                "HKDF_SHA256" => Kdf::HkdfSha256,
-                "HKDF_SHA384" => Kdf::HkdfSha384,
-                "HKDF_SHA512" => Kdf::HkdfSha512,
-                _ => Kdf::HkdfSha256,
-            };
+        // for suite in &self.config.cipher_suites {
+        //     let kdf = match suite.kdf.as_str() {
+        //         "HKDF_SHA256" => Kdf::HkdfSha256,
+        //         "HKDF_SHA384" => Kdf::HkdfSha384,
+        //         "HKDF_SHA512" => Kdf::HkdfSha512,
+        //         _ => Kdf::HkdfSha256,
+        //     };
 
-            let aead = match suite.aead.as_str() {
-                "AES_128_GCM" => Aead::Aes128Gcm,
-                "AES_256_GCM" => Aead::Aes256Gcm,
-                "CHACHA20_POLY1305" => Aead::ChaCha20Poly1305,
-                _ => Aead::Aes128Gcm,
-            };
+        //     let aead = match suite.aead.as_str() {
+        //         "AES_128_GCM" => Aead::Aes128Gcm,
+        //         "AES_256_GCM" => Aead::Aes256Gcm,
+        //         "CHACHA20_POLY1305" => Aead::ChaCha20Poly1305,
+        //         _ => Aead::Aes128Gcm,
+        //     };
 
-            symmetric_suites.push(SymmetricSuite::new(kdf, aead));
-        }
+        //     symmetric_suites.push(SymmetricSuite::new(kdf, aead));
+        // }
+
+        symmetric_suites.push(SymmetricSuite::new(Kdf::HkdfSha256, Aead::ChaCha20Poly1305));
 
         // Validate that we have at least one cipher suite
         if symmetric_suites.is_empty() {
             return Err("No valid cipher suites configured".into());
         }
 
-        // Determine KEM based on config - only X25519 is supported by ohttp crate
+        // Determine KEM based on config - only K256 is supported by ohttp crate
         let kem = Kem::K256Sha256;
 
         // Generate key config

@@ -12,6 +12,7 @@ pub fn routes() -> Router<AppState> {
     Router::new()
         // OHTTP endpoints
         .route("/gateway", post(ohttp::handle_ohttp_request))
+        .route("/.well-known/ohttp-gateway", post(ohttp::handle_ohttp_request))
         .route("/ohttp-configs", get(keys::get_ohttp_keys))
         // Health and monitoring
         .route("/health", get(health::health_check))
